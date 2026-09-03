@@ -14,6 +14,7 @@ README explaining what it fits, how to print it, and which knobs to turn.
 | Design | What it is | Status |
 | --- | --- | --- |
 | [gopro11_battery_charger_case](gopro11_battery_charger_case/) | Storage case for 4 loose GoPro HERO11 batteries plus the OEM ADDBD-211 dual charger, with a snap-fit lid | Printable, one known limitation — see its README |
+| [garage_door_remote_holder](garage_door_remote_holder/) | Wall-mounted pocket for a garage door remote or similar handset, with a thumb channel and two countersunk screw holes | Printable |
 
 More will get added over time as I make them.
 
