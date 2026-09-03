@@ -2,6 +2,11 @@
 // Parametric OpenSCAD model for FDM 3D printing
 // Revision v9.5: v9 baseline + guaranteed matching charging-port oval on BOTH charger short faces
 //
+// SPDX-FileCopyrightText: ctrmint
+// SPDX-License-Identifier: CC-BY-SA-4.0
+// Source: https://github.com/ctrmint/3D-Printing-SCAD
+// Modify and share freely; credit the original and licence derivatives CC BY-SA 4.0.
+//
 // Nominal battery size used: 40.7 x 33.6 x 13.0 mm
 // Nominal GoPro ADDBD-211 dual charger size used: 42 x 50 x 32 mm
 // Always replace these values with caliper measurements if you want a calibrated fit.
