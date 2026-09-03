@@ -176,3 +176,9 @@ charging-port openings on both short faces are identical and perfectly aligned.
 
 Verified to render cleanly and manifold in OpenSCAD 2021.01 in all four `part` modes. The committed
 STL matches the current source.
+
+## Licence
+
+[CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/) — see [`LICENSE`](../LICENSE) in the
+repo root. Print it, modify it, sell what you print; credit the original, and licence any modified
+version you publish the same way.

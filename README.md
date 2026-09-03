@@ -96,7 +96,21 @@ If something doesn't fit, doesn't print, or doesn't make sense, open an issue. N
 was 0.3 mm too tight on a Prusa MK4 in PETG" are genuinely the most useful thing you can send — that's
 exactly the kind of thing the parameters exist to absorb.
 
-## Use and sharing
+## Licence
 
-Free to use, print, modify, remix and share. Attribution is appreciated but not required. No warranty
-of any kind — you're printing plastic, use your judgement.
+Licensed under [Creative Commons Attribution-ShareAlike 4.0 International][cc-by-sa] (CC BY-SA 4.0).
+Full text in [`LICENSE`](LICENSE).
+
+In plain terms — print them, modify them, remix them, sell what you print, no need to ask. Two
+conditions:
+
+- **Credit the original.** A link back is plenty.
+- **Share alike.** If you publish a modified version of a design, licence it CC BY-SA 4.0 too, so the
+  next person gets the same freedoms you did.
+
+That second one is the whole reason for picking ShareAlike over plain CC BY: if you improve one of
+these, the improvement stays available to everyone else rather than disappearing into a closed remix.
+
+No warranty of any kind — you're printing plastic, use your judgement.
+
+[cc-by-sa]: https://creativecommons.org/licenses/by-sa/4.0/
