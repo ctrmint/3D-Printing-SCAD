@@ -59,9 +59,17 @@ lid_overlap = 6.0;
 lid_head_clearance = 1.0;
 
 // Snap-detent lid retention
-// v7: low-profile oval detents placed near the BOTTOM of the seated overlap.
-// This lets the lid slide ~4.3 mm over the body before the snap starts to deflect.
+// Low-profile oval detents placed near the BOTTOM of the seated overlap, so the
+// lid slides ~4.3 mm over the body before the snap starts to deflect.
 snap_detents = true;
+snap_count = 2;             // detents PER long sidewall, so 2 here = 4 in total.
+                            // Set to 1 for a single detent at mid-span.
+                            // Use snap_detents = false to remove them entirely.
+snap_span_fraction = 0.60;  // spread of the outermost pair, as a fraction of base_x.
+                            // Ignored when snap_count = 1. Wide spacing is what
+                            // resists prying: a detent at mid-span does very little
+                            // against a lid tipped about its far end. Automatically
+                            // clamped so no bump runs into a rounded corner.
 snap_rx = 3.20;             // half-width along the long sidewall
 snap_ry = 1.00;             // half-depth normal to the sidewall
 snap_rz = 0.65;             // low vertical profile for a gentle lead-in
@@ -128,16 +136,29 @@ lid_fit_offset_z = base_height - lid_overlap;
 // The long sidewalls are Y=0 and Y=base_y.
 // The snaps sit low in the overlap so the lid is already well located before snapping.
 snap_y_embed = snap_ry - snap_protrusion;
-detent_x = base_x/2;
 detent_front_y = snap_y_embed;
 detent_back_y  = base_y - snap_y_embed;
 detent_z = lid_fit_offset_z + snap_center_above_lid_bottom;
 
+// Detent X positions, spread symmetrically about mid-span.
+// Only the flat run of the sidewall can carry a bump, so the requested span is
+// clamped to keep every detent clear of the rounded corners. The lid's internal
+// corner radius is corner_radius + lid_clearance, hence that term below.
+snap_x_margin = corner_radius + lid_clearance + snap_rx;
+snap_span_max = max(0, base_x - 2*snap_x_margin);
+snap_span_req = snap_span_fraction * base_x;
+snap_span     = min(snap_span_req, snap_span_max);
+snap_clamped  = snap_span_req > snap_span_max;
+
+detent_xs = snap_count <= 1
+    ? [base_x/2]
+    : [for (i = [0 : snap_count-1])
+          (base_x - snap_span)/2 + i*snap_span/(snap_count-1)];
+
 // Matching receiver centres in LID-LOCAL coordinates are derived directly
 // from the fitted-lid translation, so they coincide exactly when fully seated.
-recess_front_x = detent_x       - lid_fit_offset_x;
+recess_xs      = [for (x = detent_xs) x - lid_fit_offset_x];
 recess_front_y = detent_front_y - lid_fit_offset_y;
-recess_back_x  = detent_x       - lid_fit_offset_x;
 recess_back_y  = detent_back_y  - lid_fit_offset_y;
 recess_z       = detent_z       - lid_fit_offset_z;
 recess_rx = snap_rx + snap_recess_xy_clearance;
@@ -208,12 +229,28 @@ module charger_pocket() {
 
 module snap_bumps() {
     if (snap_detents) {
-        // Front long side: shallow rounded oval protrusion
-        translate([detent_x, detent_front_y, detent_z])
-            snap_ellipsoid(snap_rx, snap_ry, snap_rz);
-        // Back long side
-        translate([detent_x, detent_back_y, detent_z])
-            snap_ellipsoid(snap_rx, snap_ry, snap_rz);
+        for (x = detent_xs) {
+            // Front long side: shallow rounded oval protrusion
+            translate([x, detent_front_y, detent_z])
+                snap_ellipsoid(snap_rx, snap_ry, snap_rz);
+            // Back long side
+            translate([x, detent_back_y, detent_z])
+                snap_ellipsoid(snap_rx, snap_ry, snap_rz);
+        }
+    }
+}
+
+// Matching low-profile oval receivers. Their centres coincide with the body
+// detents only at the fully seated lid position, by construction: each centre
+// is the detent centre minus the same offset the lid is translated by.
+module snap_recesses() {
+    if (snap_detents) {
+        for (x = recess_xs) {
+            translate([x, recess_front_y, recess_z])
+                snap_ellipsoid(recess_rx, recess_ry, recess_rz);
+            translate([x, recess_back_y, recess_z])
+                snap_ellipsoid(recess_rx, recess_ry, recess_rz);
+        }
     }
 }
 
@@ -285,14 +322,7 @@ module lid_shell() {
             rounded_box([lid_inner_x, lid_inner_y, lid_h - lid_top + 0.1],
                         max(0.8, corner_radius + lid_clearance));
 
-        if (snap_detents) {
-            // Matching low-profile oval receivers.  Their centres match
-            // the body detents only at the fully seated lid position.
-            translate([recess_front_x, recess_front_y, recess_z])
-                snap_ellipsoid(recess_rx, recess_ry, recess_rz);
-            translate([recess_back_x, recess_back_y, recess_z])
-                snap_ellipsoid(recess_rx, recess_ry, recess_rz);
-        }
+        snap_recesses();
     }
 }
 
@@ -335,10 +365,18 @@ echo("Snap physical protrusion beyond base wall (mm)", snap_protrusion);
 echo("Snap engagement beyond lid clearance (mm)", snap_protrusion-lid_clearance);
 echo("Lid overlap before first snap contact (mm)", snap_first_contact_overlap);
 echo("Snap receiver centre above lid bottom (mm)", recess_z);
-echo("Front snap BASE centre (mm)", [detent_x, detent_front_y, detent_z]);
-echo("Front receiver when lid fitted (mm)", [recess_front_x+lid_fit_offset_x, recess_front_y+lid_fit_offset_y, recess_z+lid_fit_offset_z]);
-echo("Back snap BASE centre (mm)", [detent_x, detent_back_y, detent_z]);
-echo("Back receiver when lid fitted (mm)", [recess_back_x+lid_fit_offset_x, recess_back_y+lid_fit_offset_y, recess_z+lid_fit_offset_z]);
+echo("Detents per long sidewall", snap_count);
+echo("Detents in total", snap_detents ? 2*len(detent_xs) : 0);
+echo("Detent X positions (mm)", detent_xs);
+echo("Detent span (mm)", snap_span);
+if (snap_clamped)
+    echo("NOTE: requested detent span exceeded the flat sidewall and was clamped to", snap_span);
+echo("Front snap BASE centres (mm)", [for (x=detent_xs) [x, detent_front_y, detent_z]]);
+echo("Front receivers when lid fitted (mm)",
+     [for (x=recess_xs) [x+lid_fit_offset_x, recess_front_y+lid_fit_offset_y, recess_z+lid_fit_offset_z]]);
+echo("Back snap BASE centres (mm)", [for (x=detent_xs) [x, detent_back_y, detent_z]]);
+echo("Back receivers when lid fitted (mm)",
+     [for (x=recess_xs) [x+lid_fit_offset_x, recess_back_y+lid_fit_offset_y, recess_z+lid_fit_offset_z]]);
 echo("Embossed lid text height (mm)", lid_text_height);
 echo("Charge port oval WH (mm)", [charge_port_width, charge_port_height]);
 echo("Charge ports", "both short faces - single through-axis cutter");
