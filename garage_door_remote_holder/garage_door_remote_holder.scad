@@ -2,6 +2,10 @@
 // GARAGE DOOR REMOTE WALL HOLDER
 // All dimensions in millimetres
 //
+// SPDX-FileCopyrightText: ctrmint
+// SPDX-License-Identifier: CC-BY-SA-4.0
+// Source: https://github.com/ctrmint/3D-Printing-SCAD
+// Modify and share freely; credit the original and licence derivatives CC BY-SA 4.0.
 
 $fn = 64;
 
