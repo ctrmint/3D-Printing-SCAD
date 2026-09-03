@@ -91,22 +91,42 @@ already the right way up and needs nothing.
 
 ## The snap fit
 
-The two oval bumps on the long sides of the base project 0.6 mm. The lid's internal clearance is
-0.3 mm, so the effective interference is **0.3 mm** — enough to click, not enough to fight.
+Four oval bumps — two on each long side of the base — project 0.6 mm. The lid's internal clearance is
+0.3 mm, so the effective interference is **0.3 mm**: enough to click, not enough to fight.
 
 The bumps sit low in the overlap, so the lid slides down **4.35 mm** — most of its 6 mm travel —
-before it even touches them. That means the lid is already square and located before it starts to
-deflect, which is what stops it going on crooked.
+before it even touches them. The lid is already square and located before it starts to deflect, which
+is what stops it going on crooked.
 
 First fit is usually a little stiff. It loosens after a few cycles as the lid wall takes a set.
 
-If the snap is wrong for your printer:
+### Count and spacing
+
+`snap_count` sets the detents **per long sidewall** (so the default 2 gives four in total), and
+`snap_span_fraction` sets how far apart the outermost pair sits as a fraction of the case length. The
+defaults put them at x = 18.2 mm and 72.9 mm.
+
+Spacing matters more than the count. A detent at mid-span does very little against a lid that is
+*tipped* about its far end — the far corner simply lifts. Moving detents outboard is what resists
+prying; straight pull-off was never the weak direction.
+
+The span is clamped automatically so no bump can run into a rounded corner, and the console says so
+when clamping happens. `snap_count = 1` gives one detent per wall at mid-span, which is the original
+two-detent arrangement.
+
+Peak bending strain in the lid wall is around 0.4 % at the default interference — comfortably inside
+PLA's elastic range, so repeated opening won't crack it. That leaves plenty of headroom if you want a
+firmer snap.
+
+### Tuning
 
 - **Too tight / won't seat:** drop `snap_protrusion` to `0.50`, or raise `lid_clearance` to `0.35`.
 - **Too loose / falls off:** raise `snap_protrusion` to `0.70`.
-- **Don't want it at all:** `snap_detents = false` gives a plain friction lid.
+- **Pries open at a corner:** raise `snap_span_fraction`, or go to `snap_count = 3`.
+- **Four detents feel too stiff:** `snap_count = 1` restores the original, softer fit.
+- **Don't want them at all:** `snap_detents = false` gives a plain friction lid.
 
-Change these in steps of 0.05 mm. It's a small effect with a big feel difference.
+Change `snap_protrusion` in steps of 0.05 mm. It's a small effect with a big difference in feel.
 
 ## Parameters worth touching
 
@@ -122,6 +142,8 @@ actually matter:
 | `charger_enabled` | `true` | `false` drops the charger bay entirely |
 | `lid_clearance` | `0.30` | Per side, between base outside and lid inside |
 | `snap_protrusion` | `0.60` | How far the detent bumps stick out |
+| `snap_count` | `2` | Detents per long sidewall, so 2 gives four in total |
+| `snap_span_fraction` | `0.60` | Spread of the outer pair, as a fraction of case length |
 | `lid_text` | `"GoPro"` | Embossed lid lettering |
 | `lid_text_enabled` | `true` | `false` for a plain lid |
 | `base_height` | `26.0` | How much of the battery the base swallows |
@@ -173,6 +195,10 @@ Fixing this properly is on the list.
 
 Current revision is v9.5: the v9 baseline plus a single through-axis cutter that guarantees the
 charging-port openings on both short faces are identical and perfectly aligned.
+
+Detent count and placement are now parametric (`snap_count`, `snap_span_fraction`), and the shipped
+default moved from two detents at mid-span to four spread outboard, which is what resists prying.
+`snap_count = 1` reproduces the previous geometry exactly.
 
 Verified to render cleanly and manifold in OpenSCAD 2021.01 in all four `part` modes. The committed
 STL matches the current source.
