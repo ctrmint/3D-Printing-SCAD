@@ -14,11 +14,11 @@ $fn = 64;
 wall = 1.0;
 
 // Lower round valve section
-lower_diameter = 10.0;
-lower_depth    = 19.0;
+lower_diameter = 20.0;
+lower_depth    = 16.0;
 
 // Upper square valve section
-square_width = 5.0;
+square_width = 6.0;
 square_depth = 8.0;
 
 
