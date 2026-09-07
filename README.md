@@ -15,6 +15,10 @@ README explaining what it fits, how to print it, and which knobs to turn.
 | --- | --- | --- |
 | [gopro11_battery_charger_case](gopro11_battery_charger_case/) | Storage case for 4 loose GoPro HERO11 batteries plus the OEM ADDBD-211 dual charger, with a snap-fit lid | Printable, one known limitation — see its README |
 | [garage_door_remote_holder](garage_door_remote_holder/) | Wall-mounted pocket for a garage door remote or similar handset, with a thumb channel and two countersunk screw holes | Printable |
+| [hose-to-gardena](hose-to-gardena/) | **Three** adapters: 1.5" and 2" hose barbs to Gardena-style quick connects, and a 2" BSPP female socket to a 1.5" barb. IBC tank and water butt plumbing | Printable |
+| [picture-frame-v2](picture-frame-v2/) | Portrait art frame with a curved front moulding, recessed rear bridge and integrated triangular hanger | Printable, needs a bed larger than 220 mm |
+| [draw-organiser](draw-organiser/) | Open drawer separator for a roller cabinet, with alignment pins so several link together | Printable, see its README on pin clearance |
+| [Radiator-cap](Radiator-cap/) | Push-on cap for a bare radiator valve spindle | Printable, fit needs calibrating |
 
 More will get added over time as I make them.
 
@@ -90,6 +94,9 @@ Printing a small test section first is cheaper than printing the whole thing twi
 ├── <design>.stl       exported with default parameters
 └── render.png         what it looks like
 ```
+
+A folder holding several closely related designs — [hose-to-gardena](hose-to-gardena/) is the one so
+far — keeps one README indexing them all, and names its previews `render-<design>.png` instead.
 
 ## Feedback
 
