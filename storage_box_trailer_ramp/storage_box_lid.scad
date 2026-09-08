@@ -1,6 +1,7 @@
 // ============================================================
 // STORAGE BOX - SLIDING LID
 // Matches storage_box_base.scad
+// Lid enters side grooves AND rear/end receiving groove
 // Units: mm
 // ============================================================
 
@@ -28,7 +29,9 @@ lid_side_clearance     = 0.30;
 lid_vertical_clearance = 0.40;
 lid_end_clearance      = 0.30;
 
-groove_depth        = 3.0;
+side_groove_depth = 3.0;
+rear_groove_depth = 3.0;
+
 upper_lip_thickness = 1.0;
 
 // ============================================================
@@ -37,13 +40,18 @@ upper_lip_thickness = 1.0;
 
 internal_width = box_width - 2 * wall_thickness;
 
+// Lid extends into both side-wall receiving grooves.
 lid_width =
     internal_width
-    + 2 * (groove_depth - lid_side_clearance);
+    + 2 * (side_groove_depth - lid_side_clearance);
 
+// Lid now also extends into the rear/end receiving groove.
+// With the current values it enters the 3 mm rear channel
+// by 2.70 mm, leaving 0.30 mm clearance at the groove bottom.
 lid_length =
     box_length
     - wall_thickness
+    + rear_groove_depth
     - lid_end_clearance;
 
 lid_corner_radius = 2.0;

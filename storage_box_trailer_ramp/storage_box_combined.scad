@@ -1,6 +1,6 @@
 // ============================================================
 // STORAGE BOX - COMBINED BASE + SLIDING LID
-// Sliding lid grooves are cut INTO the side walls
+// Side grooves + rear/end receiving groove are cut INTO walls
 // Units: mm
 // ============================================================
 
@@ -11,7 +11,7 @@ $fn = 64;
 // ============================================================
 
 view = "closed";
-// "closed"   = lid fully inserted
+// "closed"   = lid fully inserted into side + rear grooves
 // "exploded" = lid pulled forward for inspection
 
 exploded_distance = 90;
@@ -42,7 +42,9 @@ lid_vertical_clearance = 0.40;
 lid_end_clearance      = 0.30;
 entry_clearance        = 0.30;
 
-groove_depth        = 3.0;
+side_groove_depth = 3.0;
+rear_groove_depth = 3.0;
+
 upper_lip_thickness = 1.0;
 
 lid_corner_radius = 2.0;
@@ -59,26 +61,34 @@ groove_bottom = groove_top - groove_height;
 
 lid_width =
     internal_width
-    + 2 * (groove_depth - lid_side_clearance);
+    + 2 * (side_groove_depth - lid_side_clearance);
 
+rear_groove_width =
+    internal_width
+    + 2 * side_groove_depth
+    + 0.04;
+
+// Front edge flush with front outside face.
+// Rear edge enters rear receiving groove by
+// rear_groove_depth - lid_end_clearance.
 lid_length =
     box_length
     - wall_thickness
+    + rear_groove_depth
     - lid_end_clearance;
 
 entry_slot_width  = lid_width + 2 * entry_clearance;
 entry_slot_height = groove_height + 0.10;
 
-// Lid is centred vertically in the groove clearance.
+// Lid is centred vertically within the 0.40 mm clearance.
 closed_lid_z =
     groove_bottom
     + lid_vertical_clearance / 2;
 
-// In the closed position the lid front edge is flush with
-// the external front face, while the rear edge has the
-// specified rear clearance from the inner rear wall.
+// Closed lid front edge = -box_length/2.
+// Rear edge = rear groove bottom minus lid_end_clearance.
 closed_lid_x =
-    -(wall_thickness + lid_end_clearance) / 2;
+    (-wall_thickness + rear_groove_depth - lid_end_clearance) / 2;
 
 // ============================================================
 // HELPERS
@@ -111,11 +121,11 @@ module side_groove(side)
         side * (
             box_width / 2
             - wall_thickness
-            + groove_depth / 2
+            + side_groove_depth / 2
         );
 
     groove_front_x = -box_length / 2 - 1;
-    groove_rear_x  =  box_length / 2 - wall_thickness;
+    groove_rear_x  =  box_length / 2 - wall_thickness + 0.05;
 
     groove_length   = groove_rear_x - groove_front_x;
     groove_center_x = (groove_front_x + groove_rear_x) / 2;
@@ -127,7 +137,30 @@ module side_groove(side)
     ])
         cube([
             groove_length,
-            groove_depth + 0.02,
+            side_groove_depth + 0.02,
+            groove_height
+        ], center = true);
+}
+
+// ============================================================
+// REAR / END RECEIVING GROOVE
+// ============================================================
+
+module rear_receiving_groove()
+{
+    groove_center_x =
+        box_length / 2
+        - wall_thickness
+        + rear_groove_depth / 2;
+
+    translate([
+        groove_center_x,
+        0,
+        groove_bottom + groove_height / 2
+    ])
+        cube([
+            rear_groove_depth + 0.02,
+            rear_groove_width,
             groove_height
         ], center = true);
 }
@@ -177,6 +210,7 @@ module storage_box_base()
 
         side_groove(-1);
         side_groove(1);
+        rear_receiving_groove();
         front_entry_slot();
     }
 }
