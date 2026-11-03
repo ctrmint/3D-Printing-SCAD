@@ -6,14 +6,14 @@
 */
 
 // ===== Guard =====
-guard_length        = 215;
+guard_length        = 290;
 guard_width         = 25;
 guard_thickness     = 2;
 chamfer_width       = 5;       // Distance back from long working edge
 chamfer_tip         = 0.45;    // Thickness at the chamfered edge
 
 // ===== Compact central bridge handle =====
-handle_length       = 60;      // Maximum overall length along the guard
+handle_length       = 44;      // Maximum overall length along the guard
 handle_width        = 6;       // Width across the guard (Y)
 handle_height       = 13;      // Maximum total height from blade underside
 handle_foot_overlap = 0.4;     // Intersection with blade ensures a solid union
